@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'auth'
-  resources :users, only: [:index, :update, :show, :destroy]
+  
+  resources :users, only: [:index, :update, :destroy]
+  get '/user/profile', to: 'users#show'
+
   resources :posts do
     resources :comments
   end

@@ -12,12 +12,11 @@ class PostsController < ApplicationController
 
   # POST /posts
   def create
-    post = Post.new(post_params)
-    post.user_id = current_user.id
-    if post.save
-      render json: post
+    @post = Post.new(post_params)
+    @post.user_id = current_user.id
+    if @post.save
     else
-      render json: post.errors.full_messages, status: :unprocessable_entity
+      render json: @post.errors.full_messages, status: :unprocessable_entity
     end
   end
 
