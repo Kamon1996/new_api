@@ -31,10 +31,11 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
-    if @post.destroy
+    if @post.user_id == current_user.id
+      @post.destroy
       head :no_content
     else
-      render json: @post.errors.full_messages, status: :unprocessable_entity
+      render json: 'Руки проч от чужого поста', status: :unprocessable_entity
     end
   end
 

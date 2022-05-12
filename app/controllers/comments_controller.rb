@@ -8,7 +8,7 @@ class CommentsController < ApplicationController
     @comment.user_id = current_user.id
     if @comment.save
     else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: @comment.errors.full_messages , status: :unprocessable_entity
     end
   end
 
@@ -16,13 +16,18 @@ class CommentsController < ApplicationController
   def update
     if @comment.update(comment_params)
     else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: @comment.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   # DELETE /comments/:id
   def destroy
-    @comment.destroy
+    if @comment.user_id == current_user.id
+      @comment.destroy
+      head :no_content
+    else
+      render json: 'Руки проч от чужого комментария!', status: :unprocessable_entity
+    end
   end
 
   private
