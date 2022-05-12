@@ -4,8 +4,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :update, :destroy]
   get '/user/profile', to: 'users#show'
 
-  resources :posts do
-    resources :comments
-  end
+  resources :posts
+  resources :comments
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

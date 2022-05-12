@@ -2,7 +2,7 @@ class CommentsController < ApplicationController
   before_action :set_comment, only: [:show, :update, :destroy]
   before_action :authenticate_user!
 
-  # POST /posts/:post_id/comments
+  # POST /comments
   def create
     @comment = Comment.new(comment_params)
     @comment.user_id = current_user.id
@@ -12,7 +12,7 @@ class CommentsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /posts/:post_id/comments/:id
+  # PATCH/PUT /comments/:id
   def update
     if @comment.update(comment_params)
     else
@@ -20,7 +20,7 @@ class CommentsController < ApplicationController
     end
   end
 
-  # DELETE /posts/:post_id/comments/:id
+  # DELETE /comments/:id
   def destroy
     @comment.destroy
   end
