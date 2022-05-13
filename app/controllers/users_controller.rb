@@ -5,7 +5,15 @@ class UsersController < ApplicationController
   end
 
   # GET /user/profile
+  def show_profile
+  end
+
+  # GET /users/1
   def show
+    if @user = User.find(params[:id])
+    else
+      render json: user.errors.full_messages, status: :unprocessable_entity
+    end
   end
 
   # PATCH/PUT /users/1

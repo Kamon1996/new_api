@@ -1,10 +1,13 @@
+# == Route Map
+#
+
 Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'auth'
   
-  resources :users, only: [:index, :update, :destroy]
-  get '/user/profile', to: 'users#show'
+  resources :users, only: [:index, :update, :destroy, :show]
+  get '/user/profile', to: 'users#show_profile'
 
   resources :posts
   resources :comments
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
 end
