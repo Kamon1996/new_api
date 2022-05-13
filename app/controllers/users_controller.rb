@@ -1,30 +1,28 @@
 class UsersController < ApplicationController
 
   # GET /users
-  # GET /users
   def index
     @users = User.all
   end
 
-  # GET /users/1
+  # GET /user/profile
   def show
   end
 
   # PATCH/PUT /users/1
   def update
-    if @user.update
-      render json: @user
+    if user.update
     else
-      render json: @user.errors.full_messages, status: :unprocessable_entity
+      render json: user.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   # DELETE /users/1
   def destroy
-    if @user.destroy
+    if user.destroy
       head :no_content
     else
-      render json: @user.errors.full_messages, status: :unprocessable_entity
+      render json: user.errors.full_messages, status: :unprocessable_entity
     end
   end
 
