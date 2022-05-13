@@ -24,7 +24,7 @@ json.posts @user.posts do |post|
       json.sername comment.user.sername
     end
   end
-  
+
   json.author do
     json.id post.user.id
     json.name post.user.name

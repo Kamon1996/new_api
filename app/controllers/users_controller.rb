@@ -1,12 +1,10 @@
 class UsersController < ApplicationController
-
   def index
     @users = User.all
   end
 
   # GET /user/profile
-  def show_profile
-  end
+  def show_profile; end
 
   # GET /users/1
   def show
@@ -34,8 +32,8 @@ class UsersController < ApplicationController
   end
 
   private
-    def user
-      @user ||= User.find(params[:id])
-    end
 
+  def user
+    @user ||= User.find(params[:id])
+  end
 end

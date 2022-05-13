@@ -4,7 +4,7 @@
 # Examples:
 require 'faker'
 
-10.times do |p|
+10.times do |_p|
   post = Post.new
   post.title = Faker::Hipster.sentence(word_count: 3)
   post.body = Faker::Hipster.paragraph(sentence_count: 2, supplemental: true)

@@ -26,6 +26,3 @@ json.posts @posts do |post|
     json.sername post.user.sername
   end
 end
-
-
-
