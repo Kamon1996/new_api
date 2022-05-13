@@ -31,9 +31,6 @@ json.user do
     end
   end
 
-
-
-
   json.comments current_user.comments do |comment|
     json.id comment.id
     json.body comment.body
