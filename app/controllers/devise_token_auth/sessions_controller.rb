@@ -1,28 +1,32 @@
-class DeviseTokenAuth::SessionsController < ApplicationController
-  before_action :authenticate_user!, except: [:create]
+# frozen_string_literal: true
 
-  def create
-    user = User.find_by(email: params[:email].downcase)
-    if user&.valid_password?(params[:password])
-      client = request.headers['client']
-      new_auth_header = user.create_new_auth_token(client)
-      response.headers.merge!(new_auth_header)
-      render json: { user: user, headers: response.headers }
-    else
-      render json: 'Invalid password or email', status: :unprocessable_entity
+module DeviseTokenAuth
+  class SessionsController < ApplicationController
+    before_action :authenticate_user!, except: [:create]
+
+    def create
+      user = User.find_by(email: params[:email].downcase)
+      if user&.valid_password?(params[:password])
+        client = request.headers['client']
+        new_auth_header = user.create_new_auth_token(client)
+        response.headers.merge!(new_auth_header)
+        render json: { user: user, headers: response.headers }
+      else
+        render json: 'Invalid password or email', status: :unprocessable_entity
+      end
     end
-  end
 
-  def destroy
-    client = request.headers['client']
-    user = User.find(current_user.id)
-    user.tokens[client] = ''
-    head :no_content
-  end
+    def destroy
+      client = request.headers['client']
+      user = User.find(current_user.id)
+      user.tokens[client] = ''
+      head :no_content
+    end
 
-  private
+    private
 
-  def user_params
-    params.permit(:email, :password)
+    def user_params
+      params.permit(:email, :password)
+    end
   end
 end

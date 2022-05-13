@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   def index
     @users = User.all
@@ -8,10 +10,7 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-    if @user = User.find(params[:id])
-    else
-      render json: user.errors.full_messages, status: :unprocessable_entity
-    end
+    @user = User.find(params[:id])
   end
 
   # PATCH/PUT /users/1
