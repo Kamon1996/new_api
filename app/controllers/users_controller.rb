@@ -1,13 +1,11 @@
 class UsersController < ApplicationController
-
   # GET /users
   def index
     @users = User.all
   end
 
   # GET /user/profile
-  def show
-  end
+  def show; end
 
   # PATCH/PUT /users/1
   def update
@@ -27,8 +25,8 @@ class UsersController < ApplicationController
   end
 
   private
-    def user
-      @user ||= User.find(params[:id])
-    end
 
+  def user
+    @user ||= User.find(params[:id])
+  end
 end

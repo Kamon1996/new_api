@@ -1,5 +1,4 @@
 class DeviseTokenAuth::RegistrationsController < ApplicationController
-
   before_action :authenticate_user!, except: [:create]
 
   def create
@@ -9,7 +8,6 @@ class DeviseTokenAuth::RegistrationsController < ApplicationController
     else
       render json: { error: user.errors.full_messages }, status: :unprocessable_entity
     end
-
   end
 
   private
@@ -17,5 +15,4 @@ class DeviseTokenAuth::RegistrationsController < ApplicationController
   def user_params
     params.permit(:email, :password, :name, :sername, :nickname)
   end
-
 end
