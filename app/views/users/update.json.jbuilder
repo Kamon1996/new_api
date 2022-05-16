@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.user do
   json.id current_user.id
   json.name current_user.name
