@@ -1,4 +1,6 @@
-json.users @users do |user| 
+# frozen_string_literal: true
+
+json.users @users do |user|
   json.id user.id
   json.name user.name
   json.sername user.sername
@@ -25,7 +27,7 @@ json.users @users do |user|
       json.body comment.body
       json.created_at comment.created_at
       json.updated_at comment.updated_at
-      
+
       json.author do
         json.id comment.user.id
         json.name comment.user.name

@@ -1,6 +1,7 @@
-class PostsController < ApplicationController
+# frozen_string_literal: true
 
-  before_action :set_post, only: [:show, :update, :destroy]
+class PostsController < ApplicationController
+  before_action :set_post, only: %i[show update destroy]
 
   # GET /posts
   def index
@@ -8,8 +9,7 @@ class PostsController < ApplicationController
   end
 
   # GET /posts/1
-  def show
-  end
+  def show; end
 
   # POST /posts
   def create
@@ -40,12 +40,13 @@ class PostsController < ApplicationController
   end
 
   private
-    def set_post
-      @post = Post.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def post_params
-      params.require(:post).permit(:title, :body)
-    end
+  def set_post
+    @post = Post.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def post_params
+    params.require(:post).permit(:title, :body)
+  end
 end
