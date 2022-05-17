@@ -25,17 +25,6 @@ RSpec.describe Comment, type: :model do
   let(:user) { User.first_or_create!(email: 'user@example.com', password: 'password') }
   let(:post) { Post.first_or_create!(title: 'post title', body: 'post body', user_id: user.id) }
 
-  it 'Has a body' do
-    comment = Comment.new(
-      body: '',
-      post_id: post.id,
-      user_id: user.id,
-    )
-    expect(comment).to_not be_valid
-    comment.body = 'Has a body'
-    expect(comment).to be_valid
-  end
-
   it 'body minimum length' do
     comment = Comment.new(
       body: '12',
