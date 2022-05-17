@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: users
@@ -32,13 +30,8 @@
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_uid_and_provider      (uid,provider) UNIQUE
 #
-class User < ApplicationRecord
-  include DeviseTokenAuth::Concerns::User
-  # Include default devise modules. Others available are:
-  #  :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+require 'rails_helper'
 
-  has_many :posts, dependent: :destroy
-  has_many :comments, dependent: :destroy
+RSpec.describe User, type: :model do
+  # pending "add some examples to (or delete) #{__FILE__}"
 end
