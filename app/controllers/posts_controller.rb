@@ -12,7 +12,7 @@ class PostsController < ApplicationController
   def show
     if @post
     else
-      render json: { error: "Post does not exist"}, status: :not_found
+      render json: { error: "Post does not exist" }, status: :not_found
     end
   end
 
@@ -41,7 +41,7 @@ class PostsController < ApplicationController
       @post.destroy
       head :no_content
     else
-      render json: 'You cant destroy a post that doesnt belong to you', status: :unprocessable_entity
+      render json: { error: 'You cant destroy a post that doesnt belong to you' }, status: :unprocessable_entity
     end
   end
 

@@ -35,6 +35,9 @@ FactoryBot.define do
 
   factory :user, aliases: [:author] do
     email { Faker::Internet.free_email }
+    name { Faker::Internet.username(specifier: 5..8) }
+    sername { Faker::Internet.username(specifier: 5..8) }
+    nickname { Faker::Games::LeagueOfLegends.champion }
     password { Faker::Internet.password }
   end
 

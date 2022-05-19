@@ -157,7 +157,8 @@ RSpec.describe "/posts", type: :request do
       expect {
         delete post_url(Post.first), headers: auth_valid_headers
     }.to change(Post, :count).by(0)
-    expect(response.body).to eq("You cant destroy a post that doesnt belong to you")
+    error_from_response = JSON.parse(response.body)["error"]
+    expect(error_from_response).to_not be_empty
     end
   end
 end
