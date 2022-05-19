@@ -9,13 +9,19 @@ class PostsController < ApplicationController
   end
 
   # GET /posts/1
-  def show; end
+  def show
+    if @post
+    else
+      render json: { error: "Post does not exist"}, status: :not_found
+    end
+  end
 
   # POST /posts
   def create
     @post = Post.new(post_params)
     @post.user_id = current_user.id
     if @post.save
+      render status: :created
     else
       render json: @post.errors.full_messages, status: :unprocessable_entity
     end
@@ -35,14 +41,14 @@ class PostsController < ApplicationController
       @post.destroy
       head :no_content
     else
-      render json: 'Руки проч от чужого поста', status: :unprocessable_entity
+      render json: 'You cant destroy a post that doesnt belong to you', status: :unprocessable_entity
     end
   end
 
   private
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by(id: params[:id])
   end
 
   # Only allow a list of trusted parameters through.

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: users
@@ -32,19 +30,31 @@
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_uid_and_provider      (uid,provider) UNIQUE
 #
-class User < ApplicationRecord
-  include DeviseTokenAuth::Concerns::User
-  # Include default devise modules. Others available are:
-  #  :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
 
-  has_many :posts, dependent: :destroy
-  has_many :comments, dependent: :destroy
+FactoryBot.define do
 
-  private
+  factory :user, aliases: [:author] do
+    email { Faker::Internet.free_email }
+    password { Faker::Internet.password }
+  end
 
-  def send_confirmation_notification?
-    false
+  factory :user_with_posts, parent: :user do
+    transient do
+      posts_count { 5 }
+    end
+
+    posts do
+      Array.new(posts_count) { association(:post) }
+    end
+  end
+
+end
+
+def user_with_posts(posts_count: 5)
+  FactoryBot.create(:user) do |user|
+    FactoryBot.create_list(:post, posts_count, user: user)
   end
 end
+
+
+
