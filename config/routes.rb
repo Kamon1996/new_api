@@ -7,6 +7,6 @@ Rails.application.routes.draw do
   get '/user/profile', to: 'users#show'
 
   resources :posts
-  resources :comments
+  resources :comments, only: %i[create update destroy]
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
