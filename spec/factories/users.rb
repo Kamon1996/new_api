@@ -59,5 +59,9 @@ def user_with_posts(posts_count: 5)
   end
 end
 
+def generate_client
+  Faker::Internet.password(min_length: 30, max_length: 40)
+end
+
 
 

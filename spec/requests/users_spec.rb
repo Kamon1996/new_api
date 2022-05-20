@@ -5,7 +5,10 @@ RSpec.describe "Users", type: :request do
 
   let(:current_user) { create(:user) }
   let(:new_user) { {"email" => "email@example.com", "password" => "password" }}
-  let(:auth_valid_headers) { current_user.create_new_auth_token('client').merge("ACCEPT" => "application/json") }
+  let(:user_with_invalid_password) { {"email" => "email@example.com", "password" => "" }}
+  let(:user_with_invalid_email) { {"email" => "wrongemail", "password" => "password" }}
+  let(:valid_headers) { { "ACCEPT" => "application/json", "client" => generate_client } }
+  let(:auth_valid_headers) { current_user.create_new_auth_token('client').merge("ACCEPT" => "application/json", "client" => "client") }
   let(:authentication_errors) { "You need to sign in or sign up before continuing." }
   let(:invalid_headers) { {"ACCEPT" => "application/json"} }
 
@@ -77,16 +80,15 @@ RSpec.describe "Users", type: :request do
   describe "POST /auth" do
     context "with valid params" do
       it "should create a new Account" do
-        post user_registration_url, params: new_user
+        expect {
+          post user_registration_url, params: new_user
+      }.to change(User, :count).by(1)
         expect(response).to have_http_status(201)
       end
 
-      it "should create new Account in DB" do
-        
-      end
-
       it "should return correct status" do
-        
+        post user_registration_url, params: new_user
+        expect(response).to have_http_status(201)
       end
     end
 
@@ -94,33 +96,42 @@ RSpec.describe "Users", type: :request do
 
       context "only with invalid email " do
 
-        it "should return correct error message" do 
+        it "should return any error message" do
+          post user_registration_url, params: user_with_invalid_email
+          error_from_response = JSON.parse(response.body)["error"]
+          expect(error_from_response).to_not be_empty
         end
 
         it "should return correct status" do
+          post user_registration_url, params: user_with_invalid_email
+          expect(response).to have_http_status(422)
         end
 
         it "should not create a new Account" do
+          expect {
+            post user_registration_url, params: user_with_invalid_email
+        }.to_not change(User, :count)
         end
 
       end
 
       context "only with invalid password " do
 
-        it "should return correct error message" do 
+        it "should return any error message" do 
+          post user_registration_url, params: user_with_invalid_password
+          error_from_response = JSON.parse(response.body)["error"]
+          expect(error_from_response).to_not be_empty
         end
 
         it "should return correct status" do
+          post user_registration_url, params: user_with_invalid_password
+          expect(response).to have_http_status(422)
         end
 
         it "should not create a new Account" do
-        end
-
-      end
-
-      context "with invalid email and password " do
-
-        it "should return correct error message" do 
+          expect {
+            post user_registration_url, params: user_with_invalid_password
+        }.to_not change(User, :count)
         end
 
       end
@@ -131,18 +142,80 @@ RSpec.describe "Users", type: :request do
 
   # User Sign In
   describe "POST /auth/sign_in" do
+    context "with valid params" do
+      it "should create a new auth token currently client" do
+        post user_session_url, params: { email: current_user.email, password: current_user.password }, headers: valid_headers
+        client = valid_headers["client"]
+        current_user_in_DB = User.find_by(email: current_user.email)
+        expect(current_user_in_DB.tokens[client]).to_not be_empty
+      end
+
+      it "should send valid auth token with response" do
+        post user_session_url, params: { email: current_user.email, password: current_user.password }, headers: valid_headers
+        client = response.headers["client"]
+        token = response.headers["access-token"]
+        current_user_in_DB = User.find_by(email: current_user.email)
+        expect(response.has_header?('access-token')).to eq(true)
+        expect(current_user_in_DB.valid_token?(token, client)).to be_truthy
+      end
+
+      it "should send a correct response status" do
+        post user_session_url, params: { email: current_user.email, password: current_user.password }, headers: valid_headers
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context "with invalid params" do
+      it "should not create a new auth token for currently client" do
+        post user_session_url, params: { email: current_user.email, password: "123" }, headers: valid_headers
+        client = valid_headers["client"]
+        current_user_in_DB = User.find_by(email: current_user.email)
+        expect(current_user_in_DB.tokens).to_not include(client)
+      end
+
+      it "should sends any error message with response" do
+        post user_session_url, params: { email: current_user.email, password: "123" }, headers: valid_headers
+        error_from_response = response.body
+        expect(error_from_response).to_not be_empty
+      end
+
+      it "should send a correct response status" do
+        post user_session_url, params: { email: current_user.email, password: "123" }, headers: valid_headers
+        expect(response).to have_http_status(422)
+      end
+    end
   end
 
   # User Sign Out
   describe "DELETE /auth/sign_out" do
+    context "with auth valid headers" do
+      it "should invalidate the user's authentication token" do
+        delete destroy_user_session_url, headers: auth_valid_headers
+        client = auth_valid_headers["client"]
+        token = auth_valid_headers["access_token"]
+        expect(current_user.valid_token?(token, client)).to be_falsey
+      end
+    end
   end
 
-  # User updates params
-  describe "PATCH /users/:id" do
-  end
+  # # User updates params
+  # describe "PATCH /users/:id" do
+  #   context "with auth valid headers and params" do
+  #     it "should update user's params" do
+  #     end
 
-  # Destroy User from DB
-  describe "DELETE /users/:id" do
-  end
+  #     it "should reutrn a correct status" do
+  #     end
+
+  #   end
+  # end
+
+  # # Destroy User from DB
+  # describe "DELETE /users/:id" do
+  #   context "with auth valid headers" do
+  #     it "should destroy user from DB" do
+  #     end
+  #   end
+  # end
 
 end
