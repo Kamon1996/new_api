@@ -4,7 +4,7 @@ RSpec.describe "/comments", type: :request do
   let(:user) { create(:user) }
   let(:user_post) { create(:post, user: user) }
   let(:comment) { create(:comment, post: post) }
-  let(:auth_headers) { user.create_new_auth_token.merge('ACCEPT' => 'application/json') }
+  let(:auth_headers) { user.create_new_auth_token }
 
   let(:rand_int) { rand(1..20) }
 
