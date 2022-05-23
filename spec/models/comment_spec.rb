@@ -22,29 +22,20 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  let(:user) { User.first_or_create!(email: 'user@example.com', password: 'password') }
-  let(:post) { Post.first_or_create!(title: 'post title', body: 'post body', user_id: user.id) }
+  let(:comment) { build(:comment) }
 
-  it 'body minimum length' do
-    comment = Comment.new(
-      body: '12',
-      post_id: post.id,
-      user_id: user.id,
-    )
+  it 'should not validate comment with too short body (minimum 3)' do
+    comment.body = '12'
     expect(comment).to_not be_valid
     comment.body = '123'
     expect(comment).to be_valid
   end
 
-  it 'body maximum length' do
-    fifty_char_string = 'K7dmKrFc6TxDm5nf2vXKJdp52zxTe5aff4UpFW63B44CrahUlv'
-    comment = Comment.new(
-      body: fifty_char_string,
-      post_id: post.id,
-      user_id: user.id,
-    )
+  it 'should not validate comment with too long body (maximum 150)' do
+    one_hundred_fifty_char_length = 'a' * 150
+    comment.body = one_hundred_fifty_char_length
     expect(comment).to be_valid
-    comment.body = fifty_char_string + '1'
+    comment.body += '1'
     expect(comment).to_not be_valid
   end
 end

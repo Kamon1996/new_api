@@ -9,7 +9,6 @@ class CommentsController < ApplicationController
     @comment = Comment.new(comment_params)
     @comment.user_id = current_user.id
     if @comment.save
-      render status: :created
     else
       render json: @comment.errors.full_messages, status: :unprocessable_entity
     end
@@ -17,7 +16,9 @@ class CommentsController < ApplicationController
 
   # PATCH/PUT /comments/:id
   def update
-    if @comment.update(comment_params)
+    if @comment.user_id != current_user.id
+      render json: "Comment dosn't belong to you. Not updated", status: :unprocessable_entity
+    elsif @comment.update(comment_params)
     else
       render json: @comment.errors.full_messages, status: :unprocessable_entity
     end
@@ -29,7 +30,7 @@ class CommentsController < ApplicationController
       @comment.destroy
       head :no_content
     else
-      render json: 'Руки проч от чужого комментария!', status: :unprocessable_entity
+      render json: "Comment dosn't belong to you. Not deleted", status: :unprocessable_entity
     end
   end
 

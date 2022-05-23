@@ -41,26 +41,12 @@ FactoryBot.define do
     password { Faker::Internet.password }
   end
 
-  factory :user_with_posts, parent: :user do
-    transient do
-      posts_count { 5 }
-    end
-
-    posts do
-      Array.new(posts_count) { association(:post) }
-    end
-  end
-
 end
 
 def user_with_posts(posts_count: 5)
   FactoryBot.create(:user) do |user|
     FactoryBot.create_list(:post, posts_count, user: user)
   end
-end
-
-def generate_client
-  Faker::Internet.password(min_length: 30, max_length: 40)
 end
 
 

@@ -34,16 +34,12 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
 
-    context 'before user is created' do
-      it 'user has email' do
-        user = User.new(email: '', password: '123456')
-        expect(user).to_not be_valid
-        user.email = 'test@test.com'
-        expect(user).to be_valid
-      end
+  let(:user) { build(:user) }
 
-      it 'user has correct email' do
-        user = User.new(email: 'asd', password: '123456')
+    context 'before user is created' do
+
+      it 'should has a valid email' do
+        user.email = ''
         expect(user).to_not be_valid
         user.email = 'test@'
         expect(user).to_not be_valid
@@ -61,23 +57,18 @@ RSpec.describe User, type: :model do
         expect(user).to be_valid
       end
 
-      it 'user has unique email' do
-        user_first = User.first_or_create(email: 'test@test.test', password: '123456')
-        user_second = User.new(email: user_first.email, password: '123456')
-        expect(user_second).to_not be_valid
-        user_second.email = 'test1@test.com'
-        expect(user_second).to be_valid
-      end
-
-      it 'user has password' do
-        user = User.new(email: 'test@test.test', password: '')
+      it 'should has a unic email' do
+        user_first = create(:user)
+        user.email = user_first.email
         expect(user).to_not be_valid
-        user.password = '12345678'
+        user.email = 'test1@test.com'
         expect(user).to be_valid
       end
 
-      it 'user has valid password length' do
-        user = User.new(email: 'test@test.test', password: '12345')
+      it 'should has a valid password' do
+        user.password = ''
+        expect(user).to_not be_valid
+        user.password = '12345'
         expect(user).to_not be_valid
         user.password = '  2'
         expect(user).to_not be_valid

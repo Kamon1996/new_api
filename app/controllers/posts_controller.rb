@@ -10,10 +10,6 @@ class PostsController < ApplicationController
 
   # GET /posts/1
   def show
-    if @post
-    else
-      render json: { error: "Post does not exist" }, status: :not_found
-    end
   end
 
   # POST /posts
@@ -21,7 +17,6 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
     @post.user_id = current_user.id
     if @post.save
-      render status: :created
     else
       render json: @post.errors.full_messages, status: :unprocessable_entity
     end
@@ -29,7 +24,7 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
-    if @post.update(post_params)
+    if @post&.update(post_params)
     else
       render json: @post.errors.full_messages, status: :unprocessable_entity
     end
@@ -37,7 +32,7 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
-    if @post.user_id == current_user.id
+    if @post&.user_id == current_user.id
       @post.destroy
       head :no_content
     else
@@ -48,7 +43,7 @@ class PostsController < ApplicationController
   private
 
   def set_post
-    @post = Post.find_by(id: params[:id])
+    @post = Post.find(params[:id])
   end
 
   # Only allow a list of trusted parameters through.
