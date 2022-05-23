@@ -80,7 +80,7 @@ RSpec.describe "Users", type: :request do
       end
       it "should return correct status" do
         post user_registration_url, params: { email: new_user.email, password: new_user.password }
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_http_status(:ok)
       end
     end
 

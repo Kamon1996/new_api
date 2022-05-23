@@ -2,6 +2,7 @@
 
 class PostsController < ApplicationController
   before_action :set_post, only: %i[show update destroy]
+  before_action :check_author, only: %i[update destroy]
 
   # GET /posts
   def index
@@ -24,7 +25,7 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
-    if @post&.update(post_params)
+    if @post.update(post_params)
     else
       render json: @post.errors.full_messages, status: :unprocessable_entity
     end
@@ -32,18 +33,23 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
-    if @post&.user_id == current_user.id
-      @post.destroy
-      head :no_content
-    else
-      render json: { error: 'You cant destroy a post that doesnt belong to you' }, status: :unprocessable_entity
-    end
+      if @post.destroy
+        head :no_content
+      else 
+        render json: @post.errors.full_messages, status: :unprocessable_entity
+      end
   end
 
   private
 
   def set_post
     @post = Post.find(params[:id])
+  end
+
+  def check_author
+    if @post.user_id != current_user.id
+      render json: "Post dosn't belong to you.", status: :unprocessable_entity
+    end
   end
 
   # Only allow a list of trusted parameters through.

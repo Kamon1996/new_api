@@ -2,7 +2,7 @@
 
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[show update destroy]
-  before_action :authenticate_user!
+  before_action :check_author, only: %i[update destroy]
 
   # POST /comments
   def create
@@ -16,9 +16,7 @@ class CommentsController < ApplicationController
 
   # PATCH/PUT /comments/:id
   def update
-    if @comment.user_id != current_user.id
-      render json: "Comment dosn't belong to you. Not updated", status: :unprocessable_entity
-    elsif @comment.update(comment_params)
+    if @comment.update(comment_params)
     else
       render json: @comment.errors.full_messages, status: :unprocessable_entity
     end
@@ -26,22 +24,22 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/:id
   def destroy
-    if @comment.user_id == current_user.id
       @comment.destroy
       head :no_content
-    else
-      render json: "Comment dosn't belong to you. Not deleted", status: :unprocessable_entity
-    end
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
+  def check_author
+    if @comment.user_id != current_user.id
+      render json: "Comment dosn't belong to you.", status: :unprocessable_entity
+    end
+  end
+
   def comment_params
     params.permit(:post_id, :body)
   end
