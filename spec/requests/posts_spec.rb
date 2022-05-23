@@ -80,7 +80,7 @@ RSpec.describe "/posts", type: :request do
 
       it "renders a correct status" do
         post posts_url, params: { post: new_post.as_json }, headers: auth_headers
-        expect(response).to have_http_status(201)
+        expect(response).to have_http_status(:ok)
       end
 
       it "renders back created Post" do
