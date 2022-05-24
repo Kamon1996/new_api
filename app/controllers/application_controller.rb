@@ -12,5 +12,4 @@ class ApplicationController < ActionController::API
   def record_not_found(message = nil)
     render json: message, status: 404
   end
-
 end

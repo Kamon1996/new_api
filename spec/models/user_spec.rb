@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -33,47 +35,37 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-
   let(:user) { build(:user) }
 
-    context 'before user is created' do
-
-      it 'should has a valid email' do
-        user.email = ''
+  context 'before user is created' do
+    it 'should has a valid email' do
+      wrong_emails = ['test@', 'test@as.', 'test@as.1', 'testas.1', 'testas.',
+                      't@.t.t']
+      wrong_emails.each do |email|
+        user.email = email
         expect(user).to_not be_valid
-        user.email = 'test@'
-        expect(user).to_not be_valid
-        user.email = 'test@as.'
-        expect(user).to_not be_valid
-        user.email = 'test@as.1'
-        expect(user).to_not be_valid
-        user.email = 'testas.1'
-        expect(user).to_not be_valid
-        user.email = 'testas.'
-        expect(user).to_not be_valid
-        user.email = 't@.t.t'
-        expect(user).to_not be_valid
-        user.email = 'test@test.test'
-        expect(user).to be_valid
       end
+      user.email = 'test@test.test'
+      expect(user).to be_valid
+    end
 
-      it 'should has a unic email' do
-        user_first = create(:user)
-        user.email = user_first.email
-        expect(user).to_not be_valid
-        user.email = 'test1@test.com'
-        expect(user).to be_valid
-      end
+    it 'should has a unic email' do
+      user_first = create(:user)
+      user.email = user_first.email
+      expect(user).to_not be_valid
+      user.email = 'test1@test.com'
+      expect(user).to be_valid
+    end
 
-      it 'should has a valid password' do
-        user.password = ''
-        expect(user).to_not be_valid
-        user.password = '12345'
-        expect(user).to_not be_valid
-        user.password = '  2'
-        expect(user).to_not be_valid
-        user.password = '123456'
-        expect(user).to be_valid
-      end
+    it 'should has a valid password' do
+      user.password = ''
+      expect(user).to_not be_valid
+      user.password = '12345'
+      expect(user).to_not be_valid
+      user.password = '  2'
+      expect(user).to_not be_valid
+      user.password = '123456'
+      expect(user).to be_valid
+    end
   end
 end

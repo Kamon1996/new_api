@@ -8,5 +8,4 @@ class UsersController < ApplicationController
 
   # GET /user/profile
   def show; end
-
 end

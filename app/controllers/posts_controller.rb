@@ -10,8 +10,7 @@ class PostsController < ApplicationController
   end
 
   # GET /posts/1
-  def show
-  end
+  def show; end
 
   # POST /posts
   def create
@@ -33,11 +32,11 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
-      if @post.destroy
-        head :no_content
-      else 
-        render json: @post.errors.full_messages, status: :unprocessable_entity
-      end
+    if @post.destroy
+      head :no_content
+    else
+      render json: @post.errors.full_messages, status: :unprocessable_entity
+    end
   end
 
   private
@@ -47,9 +46,7 @@ class PostsController < ApplicationController
   end
 
   def check_author
-    if @post.user_id != current_user.id
-      render json: "Post dosn't belong to you.", status: :unprocessable_entity
-    end
+    render json: "Post dosn't belong to you.", status: :unprocessable_entity if @post.user_id != current_user.id
   end
 
   # Only allow a list of trusted parameters through.

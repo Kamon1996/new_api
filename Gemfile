@@ -31,19 +31,19 @@ gem 'rack-cors'
 # gem 'rack-cors'
 
 group :development, :test do
-  gem 'rspec-rails'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'rspec-rails'
 end
 
 group :test do
-  gem "factory_bot_rails"
+  gem 'factory_bot_rails'
   gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
 end
 
 group :development do
+  gem 'annotate'
   gem 'listen', '~> 3.3'
   gem 'rubocop', require: false
-  gem 'annotate'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end

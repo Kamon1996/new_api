@@ -24,8 +24,8 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/:id
   def destroy
-      @comment.destroy
-      head :no_content
+    @comment.destroy
+    head :no_content
   end
 
   private
@@ -35,9 +35,7 @@ class CommentsController < ApplicationController
   end
 
   def check_author
-    if @comment.user_id != current_user.id
-      render json: "Comment dosn't belong to you.", status: :unprocessable_entity
-    end
+    render json: "Comment dosn't belong to you.", status: :unprocessable_entity if @comment.user_id != current_user.id
   end
 
   def comment_params

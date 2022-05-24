@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: posts
@@ -20,7 +22,7 @@
 require 'rails_helper'
 
 RSpec.describe Post, type: :model do
-  let (:post) { build(:post) }
+  let(:post) { build(:post) }
 
   it 'should not validate post with too short title (minimum 3)' do
     post.title = '12'
@@ -30,7 +32,7 @@ RSpec.describe Post, type: :model do
   end
 
   it 'should not validate post with too long title (maximum 150)' do
-    hundred_fifty_char_string = "a" * 150
+    hundred_fifty_char_string = 'a' * 150
     post.title = hundred_fifty_char_string
     expect(post).to be_valid
     post.title += '1'
@@ -45,7 +47,7 @@ RSpec.describe Post, type: :model do
   end
 
   it 'should not validate post with too long body (maximum 500)' do
-    five_hundred_char_string = "1" * 500
+    five_hundred_char_string = '1' * 500
     post.body = five_hundred_char_string
     expect(post).to be_valid
     post.body += '1'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -32,7 +34,6 @@
 #
 
 FactoryBot.define do
-
   factory :user, aliases: [:author] do
     email { Faker::Internet.free_email }
     name { Faker::Internet.username(specifier: 5..8) }
@@ -40,7 +41,6 @@ FactoryBot.define do
     nickname { Faker::Games::LeagueOfLegends.champion }
     password { Faker::Internet.password }
   end
-
 end
 
 def user_with_posts(posts_count: 5)
@@ -48,6 +48,3 @@ def user_with_posts(posts_count: 5)
     FactoryBot.create_list(:post, posts_count, user: user)
   end
 end
-
-
-
