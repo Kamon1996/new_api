@@ -4,14 +4,14 @@ module DefaultFormat
   extend ActiveSupport::Concern
 
   included do
-    let(:default_format) { 'application/json' }
+    let(:default_format) { :json }
     prepend RequestHelpersCustomized
   end
 
   module RequestHelpersCustomized
-    l = lambda do |path, **kwarg|
-      kwarg[:headers] = { accept: default_format }.merge(kwarg[:headers] || {})
-      super(path, **kwarg)
+    l = lambda do |path, **kwargs|
+      kwargs[:format] ||= default_format if default_format
+      super(path, kwargs)
     end
     %w[get post patch put delete].each do |method|
       define_method(method, l)
@@ -19,6 +19,10 @@ module DefaultFormat
   end
 end
 
+def json
+  JSON.parse(response.body)
+end
+
 RSpec.configure do |config|
-  config.include DefaultFormat, type: :request
+  config.include DefaultFormat, type: :controller
 end
