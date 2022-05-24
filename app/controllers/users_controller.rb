@@ -7,5 +7,5 @@ class UsersController < ApplicationController
   end
 
   # GET /user/profile
-  def show; end
+  def show_profile; end
 end
