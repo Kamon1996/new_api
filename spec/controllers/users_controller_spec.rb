@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
   let(:current_user) { create(:user) }
-  let(:new_user) { build(:user) }
   let(:auth_headers) { current_user.create_new_auth_token }
   let(:authentication_error_message) { 'You need to sign in or sign up before continuing.' }
 
