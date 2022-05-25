@@ -22,11 +22,5 @@ module DeviseTokenAuth
       user.create_new_auth_token(client)
       head :no_content
     end
-
-    private
-
-    def user_params
-      params.permit(:email, :password)
-    end
   end
 end

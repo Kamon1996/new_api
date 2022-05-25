@@ -32,11 +32,8 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
-    if @post.destroy
-      head :no_content
-    else
-      render json: @post.errors.full_messages, status: :unprocessable_entity
-    end
+    @post.destroy
+    head :no_content
   end
 
   private

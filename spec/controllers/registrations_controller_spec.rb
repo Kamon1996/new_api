@@ -12,11 +12,19 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
     context 'with valid params' do
       it 'should create a new Account' do
         expect do
-          post :create, params: { email: new_user.email, password: new_user.password }
+          post :create, params: new_user.as_json.merge(password: new_user.password)
         end.to change(User, :count).by(1)
       end
+      it 'should create correct Account in database' do
+          post :create, params: new_user.as_json.merge(password: new_user.password)
+          created_user = User.find_by(email: new_user.email)
+          expect(created_user.email).to eq(new_user.email)
+          expect(created_user.name).to eq(new_user.name)
+          expect(created_user.sername).to eq(new_user.sername)
+          expect(created_user.nickname).to eq(new_user.nickname)
+      end
       it 'should return correct status' do
-        post :create, params: { email: new_user.email, password: new_user.password }
+        post :create, params: new_user.as_json.merge(password: new_user.password)
         expect(response).to have_http_status(:ok)
       end
     end
