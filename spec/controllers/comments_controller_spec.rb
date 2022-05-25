@@ -12,15 +12,13 @@ RSpec.describe CommentsController, type: :controller do
   describe 'comments#create' do
     context 'whith valid params' do
       it 'should create a comment for correct post' do
-        expect do
-          post :create, params: auth_headers.merge(body: 'yoy guys', post_id: new_post.id)
-        end.to change(Post.find(new_post.id).comments, :count).by(1)
+        post :create, params: auth_headers.merge(body: 'yoy guys', post_id: new_post.id)
+        expect(json['post_id']).to eq(new_post.id)
       end
 
       it 'should create a comment that belongs to correct author' do
         post :create, params: auth_headers.merge(body: 'new body', post_id: new_post.id)
-        created_comment = Comment.find_by(body: 'new body')
-        expect(created_comment.user_id).to eq(user.id)
+        expect(json['author']['id']).to eq(user.id)
       end
 
       it 'should send response with correct data' do

@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
-  let(:new_user) { build(:user) }
   before :each do
     request.env['devise.mapping'] = Devise.mappings[:user]
   end
@@ -12,19 +11,17 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
     context 'with valid params' do
       it 'should create a new Account' do
         expect do
-          post :create, params: new_user.as_json.merge(password: new_user.password)
+          post :create, params: { email: 'test@example.com', password: 'password' }
         end.to change(User, :count).by(1)
       end
       it 'should create correct Account in database' do
-          post :create, params: new_user.as_json.merge(password: new_user.password)
-          created_user = User.find_by(email: new_user.email)
-          expect(created_user.email).to eq(new_user.email)
-          expect(created_user.name).to eq(new_user.name)
-          expect(created_user.sername).to eq(new_user.sername)
-          expect(created_user.nickname).to eq(new_user.nickname)
+        post :create, params: { email: 'test@example.com', password: 'password', name: 'name', sername: 'sername' }
+        expect(json['email']).to eq('test@example.com')
+        expect(json['name']).to eq('name')
+        expect(json['sername']).to eq('sername')
       end
       it 'should return correct status' do
-        post :create, params: new_user.as_json.merge(password: new_user.password)
+        post :create, params: { email: 'test@example.com', password: 'password' }
         expect(response).to have_http_status(:ok)
       end
     end
@@ -33,35 +30,35 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
       context 'only with invalid email ' do
         it 'should not create a new Account' do
           expect do
-            post :create, params: { email: 'wrong_email', password: new_user.password }
+            post :create, params: { email: 'wrong_email', password: 'password' }
           end.to_not change(User, :count)
         end
 
         it 'should return any error message' do
-          post :create, params: { email: 'wrong_email', password: new_user.password }
+          post :create, params: { email: 'wrong_email', password: 'password' }
           expect(json['error']).to_not be_empty
         end
 
         it 'should return correct status' do
-          post :create, params: { email: 'wrong_email', password: new_user.password }
+          post :create, params: { email: 'wrong_email', password: 'password' }
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
 
       context 'only with invalid password ' do
         it 'should return any error message' do
-          post :create, params: { email: new_user.email, password: '123' }
+          post :create, params: { email: 'test@example.com', password: '12' }
           expect(json['error']).to_not be_empty
         end
 
         it 'should return correct status' do
-          post :create, params: { email: new_user.email, password: '' }
+          post :create, params: { email: 'test@example.com', password: '123' }
           expect(response).to have_http_status(422)
         end
 
         it 'should not create a new Account' do
           expect do
-            post :create, params: { email: new_user.email, password: 'abcde' }
+            post :create, params: { email: 'test@example.com', password: 'abcde' }
           end.to_not change(User, :count)
         end
       end
