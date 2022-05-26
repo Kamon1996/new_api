@@ -17,6 +17,7 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
     @post.user_id = current_user.id
     if @post.save
+      render template: 'posts/show'
     else
       render json: @post.errors.full_messages, status: :unprocessable_entity
     end
@@ -25,6 +26,7 @@ class PostsController < ApplicationController
   # PATCH/PUT /posts/1
   def update
     if @post.update(post_params)
+      render template: 'posts/show'
     else
       render json: @post.errors.full_messages, status: :unprocessable_entity
     end

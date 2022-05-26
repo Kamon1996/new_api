@@ -10,19 +10,16 @@ RSpec.describe CommentsController, type: :controller do
 
   describe 'comments#create' do
     context 'when usesd valid params' do
-      it 'should create a comment for correct post' do
-        post :create, params: auth_headers.merge(body: 'yoy guys', post_id: new_post.id)
-        expect(json['post_id']).to eq(new_post.id)
-      end
-
-      it 'should create a comment that belongs to correct author' do
+      it 'should create and send response with correct data and status' do
         post :create, params: auth_headers.merge(body: 'new body', post_id: new_post.id)
-        expect(json['author']['id']).to eq(user.id)
-      end
-
-      it 'should send response with correct data and status' do
-        post :create, params: auth_headers.merge(body: 'new body', post_id: new_post.id)
-        expect(response.body).to include('id', 'post_id', 'body', 'created_at', 'updated_at', 'author')
+        created_comment = Comment.last
+        puts json
+        expect(created_comment.body).to eq('new body')
+        expect(created_comment.post_id).to eq(new_post.id)
+        expect(json['id']).to eq(created_comment.id)
+        expect(json['body']).to eq(created_comment.body)
+        expect(json['post_id']).to eq(created_comment.post_id)
+        expect(json['author']['id']).to eq(created_comment.user_id)
         expect(response).to have_http_status(:ok)
       end
     end
@@ -36,24 +33,14 @@ RSpec.describe CommentsController, type: :controller do
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
-
-    context 'when user not authorized' do
-      it "shouldn't create post and send response with correct error message and status" do
-        expect do
-          post :create, params: { body: 'correct body', post_id: new_post.id }
-        end.to_not change(Comment, :count)
-        expect(response.body).to include('You need to sign in or sign up before continuing')
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
   end
 
   describe 'comments#update' do
     context 'when used valid params' do
       it 'should updated existed comment and send correct status with response' do
         put :update, params: auth_headers.merge(body: 'updated body', id: my_comment)
-        comment_from_db = Comment.find(my_comment.id)
-        expect(comment_from_db.body).to eq('updated body')
+        comment_from_data_base = Comment.find(my_comment.id)
+        expect(comment_from_data_base.body).to eq('updated body')
         expect(response).to have_http_status(:ok)
       end
 
@@ -64,13 +51,15 @@ RSpec.describe CommentsController, type: :controller do
         expect(json['body']).to eq('updated body')
       end
 
-      it "shouldn't let you update comment that doesn't belongs to you and send coorect error message and status with response" do
-        comment = create(:comment)
-        put :update, params: auth_headers.merge(body: 'updated body', id: comment)
-        comment_from_db = Comment.find(comment.id)
-        expect(comment_from_db.body).to eq(comment.body)
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to include("doesn't belong to you.")
+      context "when comment doesn't belongs to you" do
+        it "shouldn't let you update comment and send coorect error message and status with response" do
+          comment = create(:comment)
+          put :update, params: auth_headers.merge(body: 'updated body', id: comment)
+          comment_from_db = Comment.find(comment.id)
+          expect(comment_from_db.body).to eq(comment.body)
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.body).to include("doesn't belong to you.")
+        end
       end
     end
 
@@ -89,16 +78,6 @@ RSpec.describe CommentsController, type: :controller do
           expect(response.body).to include("Couldn't find")
           expect(response).to have_http_status(:not_found)
         end
-      end
-    end
-
-    context 'when user not authorized' do
-      it "shouldn't change comment and send correct error message and status with response" do
-        put :update, params: { body: 'changed body', id: my_comment }
-        comment_from_db = Comment.find(my_comment.id)
-        expect(comment_from_db.body).to eq(my_comment.body)
-        expect(response.body).to include('You need to sign in or sign up before continuing')
-        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -123,6 +102,37 @@ RSpec.describe CommentsController, type: :controller do
           expect(response.body).to include("doesn't belong to you.")
           expect(response).to have_http_status(:unprocessable_entity)
         end
+      end
+    end
+  end
+
+  describe 'when user not authorized' do
+    let(:authentication_error_message) { 'You need to sign in or sign up before continuing.' }
+    context 'comments#create' do
+      it "shouldn't create post and send response with correct error message and status" do
+        expect do
+          post :create, params: { body: 'correct body', post_id: new_post.id }
+        end.to_not change(Comment, :count)
+        expect(response.body).to include(authentication_error_message)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    context 'comments#update' do
+      it "shouldn't change comment and send correct error message and status with response" do
+        put :update, params: { body: 'changed body', id: my_comment }
+        comment_from_db = Comment.find(my_comment.id)
+        expect(comment_from_db.body).to eq(my_comment.body)
+        expect(response.body).to include(authentication_error_message)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    context 'comments#destroy' do
+      it "shouldn't delete post and send response with correct error message and status" do
+        expect do
+          delete :destroy, params: { id: my_comment }
+        end.to change(Comment, :count).by(1)
+        expect(response.body).to include(authentication_error_message)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

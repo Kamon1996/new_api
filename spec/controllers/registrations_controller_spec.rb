@@ -51,7 +51,7 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
         it 'should send correct error message and status with response' do
           post :create, params: { email: 'test@example.com', password: '12' }
           expect(response.body).to include('Password is too short')
-          expect(response).to have_http_status(422)
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end

@@ -11,27 +11,20 @@ RSpec.describe DeviseTokenAuth::SessionsController, type: :controller do
 
   describe 'sessions#create' do
     context 'when used valid params' do
-      it 'should create a new auth token for currently client' do
-        post :create, params: auth_headers.merge(email: current_user.email, password: current_user.password)
-        client = auth_headers['client']
-        current_user_in_db = User.find_by(email: current_user.email)
-        expect(current_user_in_db.tokens[client]).to_not be_empty
-      end
-
       it 'should send valid auth token and status with response' do
-        post :create, params: auth_headers.merge(email: current_user.email, password: current_user.password)
+        post :create, params: { email: current_user.email, password: current_user.password }
         client = response.headers['client']
         token = response.headers['access-token']
-        current_user_in_db = User.find_by(email: current_user.email)
+        current_user_in_data_base = User.find(current_user.id)
         expect(response.has_header?('access-token')).to eq(true)
-        expect(current_user_in_db.valid_token?(token, client)).to be_truthy
+        expect(current_user_in_data_base.valid_token?(token, client)).to be_truthy
         expect(response).to have_http_status(200)
       end
     end
 
     context 'when used invalid params' do
-      it 'should send any correct message and status with response' do
-        post :create, params: auth_headers.merge(email: current_user.email, password: '12')
+      it 'should send correct message and status with response' do
+        post :create, params: { email: current_user.email, password: '12' }
         expect(response.body).to include('Invalid password or email')
         expect(response).to have_http_status(422)
       end

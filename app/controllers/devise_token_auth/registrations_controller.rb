@@ -7,7 +7,7 @@ module DeviseTokenAuth
     def create
       @user = User.new(user_params)
       if @user.save
-        render template: 'users/show'
+        render template: 'users/show_profile'
       else
         render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
       end
