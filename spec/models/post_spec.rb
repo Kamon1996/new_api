@@ -24,14 +24,14 @@ require 'rails_helper'
 RSpec.describe Post, type: :model do
   let(:post) { build(:post) }
 
-  it 'should not validate post with too short title (minimum 3)' do
+  it 'should not validate post when used too short title (minimum 3)' do
     post.title = '12'
     expect(post).to_not be_valid
     post.title = '123'
     expect(post).to be_valid
   end
 
-  it 'should not validate post with too long title (maximum 150)' do
+  it 'should not validate post when used too long title (maximum 150)' do
     hundred_fifty_char_string = 'a' * 150
     post.title = hundred_fifty_char_string
     expect(post).to be_valid
@@ -39,14 +39,14 @@ RSpec.describe Post, type: :model do
     expect(post).to_not be_valid
   end
 
-  it 'should not validate post with too short body (minimum 3)' do
+  it 'should not validate post when used too short body (minimum 3)' do
     post.body = '12'
     expect(post).to_not be_valid
     post.body = '123'
     expect(post).to be_valid
   end
 
-  it 'should not validate post with too long body (maximum 500)' do
+  it 'should not validate post when used too long body (maximum 500)' do
     five_hundred_char_string = '1' * 500
     post.body = five_hundred_char_string
     expect(post).to be_valid

@@ -9,8 +9,8 @@ RSpec.describe UsersController, type: :controller do
 
   # Get All Users
   describe 'users#index' do
-    context 'with valid headers' do
-      it 'should return all users with correct count' do
+    context 'when used valid headers' do
+      it 'should return all users when used correct count' do
         get :index, params: auth_headers
         expect(json['users'].count).to eq(User.all.count)
       end
@@ -21,7 +21,7 @@ RSpec.describe UsersController, type: :controller do
       end
     end
 
-    context 'with invalid headers' do
+    context 'when used invalid headers' do
       it 'should return authentication errors' do
         get :index
         expect(response.body).to include(authentication_error_message)
@@ -36,7 +36,7 @@ RSpec.describe UsersController, type: :controller do
 
   # Get User Profile
   describe 'users#show_profile' do
-    context 'with valid headers' do
+    context 'when used valid headers' do
       it "should return current user's data" do
         get :show_profile, params: auth_headers
         user_from_response = json['user']
@@ -52,7 +52,7 @@ RSpec.describe UsersController, type: :controller do
       end
     end
 
-    context 'with invalid headers' do
+    context 'when used invalid headers' do
       it 'should return authentication errors' do
         get :show_profile
         expect(response.body).to include(authentication_error_message)

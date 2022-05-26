@@ -35,7 +35,7 @@ class CommentsController < ApplicationController
   end
 
   def check_author
-    render json: "Comment dosn't belong to you.", status: :unprocessable_entity if @comment.user_id != current_user.id
+    render json: "Comment doesn't belong to you.", status: :unprocessable_entity if @comment.user_id != current_user.id
   end
 
   def comment_params

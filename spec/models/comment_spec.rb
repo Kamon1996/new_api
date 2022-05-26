@@ -26,14 +26,14 @@ require 'rails_helper'
 RSpec.describe Comment, type: :model do
   let(:comment) { build(:comment) }
 
-  it 'should not validate comment with too short body (minimum 3)' do
+  it 'should not validate comment when used too short body (minimum 3)' do
     comment.body = '12'
     expect(comment).to_not be_valid
     comment.body = '123'
     expect(comment).to be_valid
   end
 
-  it 'should not validate comment with too long body (maximum 300)' do
+  it 'should not validate comment when used too long body (maximum 300)' do
     three_hundred_char_length = 'a' * 300
     comment.body = three_hundred_char_length
     expect(comment).to be_valid

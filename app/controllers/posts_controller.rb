@@ -43,7 +43,7 @@ class PostsController < ApplicationController
   end
 
   def check_author
-    render json: "Post dosn't belong to you.", status: :unprocessable_entity if @post.user_id != current_user.id
+    render json: "Post doesn't belong to you.", status: :unprocessable_entity if @post.user_id != current_user.id
   end
 
   # Only allow a list of trusted parameters through.
