@@ -13,7 +13,6 @@ RSpec.describe CommentsController, type: :controller do
       it 'should create and send response with correct data and status' do
         post :create, params: auth_headers.merge(body: 'new body', post_id: new_post.id)
         created_comment = Comment.last
-        puts json
         expect(created_comment.body).to eq('new body')
         expect(created_comment.post_id).to eq(new_post.id)
         expect(json['id']).to eq(created_comment.id)

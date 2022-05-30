@@ -41,6 +41,8 @@ group :test do
 end
 
 group :development do
+  gem 'rails-erd'
+  gem 'ruby-graphviz'
   gem 'annotate'
   gem 'listen', '~> 3.3'
   gem 'rubocop', require: false

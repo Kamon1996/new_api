@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.partial! 'parsials/post', locals: { post: @post }
+json.partial! 'partials/post', locals: { post: @post }

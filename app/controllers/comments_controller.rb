@@ -9,7 +9,7 @@ class CommentsController < ApplicationController
     @comment = Comment.new(comment_params)
     @comment.user_id = current_user.id
     if @comment.save
-      render template: 'comments/show'
+      render :show
     else
       render json: @comment.errors.full_messages, status: :unprocessable_entity
     end
@@ -18,7 +18,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/:id
   def update
     if @comment.update(comment_params)
-      render template: 'comments/show'
+      render :show
     else
       render json: @comment.errors.full_messages, status: :unprocessable_entity
     end

@@ -6,5 +6,5 @@ json.body comment.body
 json.created_at comment.created_at
 json.updated_at comment.updated_at
 json.author do
-  json.partial! 'parsials/author', locals: { author: comment.user }
+  json.partial! 'partials/author', locals: { author: comment.user }
 end
