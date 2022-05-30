@@ -21,9 +21,10 @@
 #  post_id  (post_id => posts.id)
 #  user_id  (user_id => users.id)
 #
-class Comment < ApplicationRecord
-  belongs_to :user
-  belongs_to :post
-
-  validates :body, presence: true, length: { minimum: 3, maximum: 300 }
+FactoryBot.define do
+  factory :comment do
+    body { Faker::ChuckNorris.fact }
+    user
+    post
+  end
 end

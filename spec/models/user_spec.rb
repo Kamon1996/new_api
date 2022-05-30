@@ -32,19 +32,40 @@
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_uid_and_provider      (uid,provider) UNIQUE
 #
-class User < ApplicationRecord
-  include DeviseTokenAuth::Concerns::User
-  # Include default devise modules. Others available are:
-  #  :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+require 'rails_helper'
 
-  has_many :posts, dependent: :destroy
-  has_many :comments, dependent: :destroy
+RSpec.describe User, type: :model do
+  let(:user) { build(:user) }
 
-  private
+  context 'before user is created' do
+    it 'should has a valid email' do
+      wrong_emails = ['test@', 'test@as.', 'test@as.1', 'testas.1', 'testas.',
+                      't@.t.t']
+      wrong_emails.each do |email|
+        user.email = email
+        expect(user).to_not be_valid
+      end
+      user.email = 'test@test.test'
+      expect(user).to be_valid
+    end
 
-  def send_confirmation_notification?
-    false
+    it 'should has a unic email' do
+      user_first = create(:user)
+      user.email = user_first.email
+      expect(user).to_not be_valid
+      user.email = 'test1@test.com'
+      expect(user).to be_valid
+    end
+
+    it 'should has a valid password' do
+      user.password = ''
+      expect(user).to_not be_valid
+      user.password = '12345'
+      expect(user).to_not be_valid
+      user.password = '  2'
+      expect(user).to_not be_valid
+      user.password = '123456'
+      expect(user).to be_valid
+    end
   end
 end

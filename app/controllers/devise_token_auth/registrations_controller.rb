@@ -5,11 +5,11 @@ module DeviseTokenAuth
     before_action :authenticate_user!, except: [:create]
 
     def create
-      user = User.new(user_params)
-      if user.save
-        render json: user, status: :created
+      @user = User.new(user_params)
+      if @user.save
+        render template: 'users/show_profile'
       else
-        render json: { error: user.errors.full_messages }, status: :unprocessable_entity
+        render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
       end
     end
 

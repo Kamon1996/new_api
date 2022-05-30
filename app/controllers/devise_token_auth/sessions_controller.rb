@@ -19,14 +19,8 @@ module DeviseTokenAuth
     def destroy
       client = request.headers['client']
       user = User.find(current_user.id)
-      user.tokens[client] = ''
+      user.create_new_auth_token(client)
       head :no_content
-    end
-
-    private
-
-    def user_params
-      params.permit(:email, :password)
     end
   end
 end
